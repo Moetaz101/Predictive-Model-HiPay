@@ -5,6 +5,8 @@ import pickle
 import plotly.graph_objects as go
 import plotly.express as px
 from datetime import datetime
+import base64
+from pathlib import Path
 
 # Page configuration
 st.set_page_config(
@@ -14,107 +16,134 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for modern UI
-st.markdown("""
-    <style>
-    .main {
-        padding: 0rem 1rem;
-    }
-    .stApp {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-    .css-1d391kg {
-        padding: 2rem 1rem;
-    }
-    .title-container {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 2rem;
-        border-radius: 15px;
-        margin-bottom: 2rem;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-        text-align: center;
-    }
-    .app-title {
-        font-size: 4rem;
-        font-weight: 800;
-        color: white;
-        margin: 0;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        letter-spacing: 2px;
-    }
-    .app-subtitle {
-        font-size: 1.2rem;
-        color: #f0f0f0;
-        margin-top: 0.5rem;
-    }
-    .form-container {
-        background: white;
-        padding: 2rem;
-        border-radius: 15px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-        margin-bottom: 2rem;
-    }
-    .dashboard-container {
-        background: white;
-        padding: 2rem;
-        border-radius: 15px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-    }
-    .metric-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 1.5rem;
-        border-radius: 10px;
-        color: white;
-        text-align: center;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-    }
-    .metric-value {
-        font-size: 2.5rem;
-        font-weight: bold;
-        margin: 0.5rem 0;
-    }
-    .metric-label {
-        font-size: 1rem;
-        opacity: 0.9;
-    }
-    .stButton>button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        font-size: 1.2rem;
-        font-weight: 600;
-        padding: 0.75rem 3rem;
-        border-radius: 10px;
-        border: none;
-        box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
-        transition: all 0.3s ease;
-        width: 100%;
-    }
-    .stButton>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-    }
-    h1, h2, h3 {
-        color: #2c3e50;
-    }
-    .prediction-box {
-        padding: 2rem;
-        border-radius: 15px;
-        margin: 2rem 0;
-        text-align: center;
-        font-size: 1.5rem;
-        font-weight: 600;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-    }
-    .fraud-detected {
-        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-        color: white;
-    }
-    .no-fraud {
-        background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
-        color: white;
-    }
-    </style>
-""", unsafe_allow_html=True)
+# Function to encode background image
+def get_base64_encoded_image(image_path):
+    try:
+        with open(image_path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode()
+    except:
+        return None
+
+# Get background image
+bg_image = get_base64_encoded_image("bg2.png")
+
+# Custom CSS for modern UI with background image
+if bg_image:
+    st.markdown(f"""
+        <style>
+        .main {{
+            padding: 0rem 1rem;
+        }}
+        .stApp {{
+            background-image: url("data:image/png;base64,{bg_image}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }}
+        .stApp::before {{
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.85) 0%, rgba(118, 75, 162, 0.85) 100%);
+            z-index: -1;
+            pointer-events: none;
+        }}
+        .css-1d391kg {{
+            padding: 2rem 1rem;
+        }}
+        .title-container {{
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            text-align: center;
+        }}
+        .app-title {{
+            font-size: 4rem;
+            font-weight: 800;
+            color: white;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            letter-spacing: 2px;
+        }}
+        .app-subtitle {{
+            font-size: 1.2rem;
+            color: #f0f0f0;
+            margin-top: 0.5rem;
+        }}
+        .form-container {{
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }}
+        .dashboard-container {{
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }}
+        .metric-card {{
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1.5rem;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }}
+        .metric-value {{
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }}
+        .metric-label {{
+            font-size: 1rem;
+            opacity: 0.9;
+        }}
+        .stButton>button {{
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 0.75rem 3rem;
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            width: 100%;
+        }}
+        .stButton>button:hover {{
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }}
+        h1, h2, h3 {{
+            color: #2c3e50;
+        }}
+        .prediction-box {{
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }}
+        .fraud-detected {{
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+        }}
+        .no-fraud {{
+            background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+            color: white;
+        }}
+        </style>
+    """, unsafe_allow_html=True)
 
 # Load the saved model and scaler
 @st.cache_resource
@@ -366,17 +395,17 @@ def main():
         with chart_col1:
             fig1 = create_fraud_distribution_chart()
             if fig1:
-                st.plotly_chart(fig1, use_container_width=True)
+                st.plotly_chart(fig1, width='stretch')
         
         with chart_col2:
             fig2 = create_transaction_type_chart()
             if fig2:
-                st.plotly_chart(fig2, use_container_width=True)
+                st.plotly_chart(fig2, width='stretch')
         
         with chart_col3:
             fig3 = create_amount_chart()
             if fig3:
-                st.plotly_chart(fig3, use_container_width=True)
+                st.plotly_chart(fig3, width='stretch')
         
         # Recent transactions table
         st.markdown("### 📋 Recent Transactions")
@@ -384,7 +413,7 @@ def main():
         df_display['Status'] = df_display['prediction'].map({0: '✅ Legitimate', 1: '🚨 Fraudulent'})
         df_display = df_display[['timestamp', 'type', 'amount', 'Status']]
         df_display.columns = ['Timestamp', 'Type', 'Amount', 'Status']
-        st.dataframe(df_display, use_container_width=True, hide_index=True)
+        st.dataframe(df_display, width='stretch', hide_index=True)
         
         st.markdown("</div>", unsafe_allow_html=True)
 
